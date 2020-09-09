@@ -32,8 +32,8 @@ background-image:url('bilder/Bg - startmenu-01.png');
 background-size: 100%;
 background-repeat:no-repeat;
 
-	
-	 }
+ }
+  
  			  
 
 </style>
@@ -66,9 +66,9 @@ var mySound;
 var myMusic;
 
 function startGame() {
-    myGamePiece = new component(80, 30, "#fd5902", 210, 220);
-    mySound = new sound("bounce.mp3");
-    myMusic = new sound("gametheme.mp3");
+    myGamePiece = new component(80, 30, "bilder/fisken-01-01.png", 210, 220, "image");
+    mySound = new sound("lyd/krasj.mp3");
+    myMusic = new sound("lyd/melodien samlet lang.mp3");
     myMusic.play();
     myGameArea.start(0);
 }
@@ -83,9 +83,11 @@ var myGameArea = {
         this.frameNo = 0;
         this.interval = setInterval(updateGameArea, 20);
 		window.addEventListener('keydown', function (e) {
+		myGamePiece.image.src = "bilder/fisken bobler-01-01.png";
       myGameArea.key = e.keyCode;
     })
     window.addEventListener('keyup', function (e) {
+	myGamePiece.image.src = "bilder/fisken-01-01.png";
       myGameArea.key = false;
     })
     },
@@ -97,7 +99,12 @@ var myGameArea = {
     }
 }
 
-function component(width, height, color, x, y) {
+function component(width, height, color, x, y, type) {
+ this.type = type;
+  if (type == "image") {
+    this.image = new Image();
+    this.image.src = color;
+  }
     this.width = width;
     this.height = height;
     this.speedX = 0;
@@ -106,9 +113,30 @@ function component(width, height, color, x, y) {
     this.y = y;    
     this.update = function() {
         ctx = myGameArea.context;
+		
+		
+		
+		
+		
+		
+		
+		if (type == "image") {
+      ctx.drawImage(this.image,
+        this.x,
+        this.y,
+        this.width, this.height);
+    } else {
+		
+		
+		
+		
+		
+		
+		
+		
         ctx.fillStyle = color;
         ctx.fillRect(this.x, this.y, this.width, this.height);
-    }
+    }}
     this.newPos = function() {
         this.x += this.speedX;
         this.y += this.speedY;        
@@ -129,6 +157,8 @@ function component(width, height, color, x, y) {
         return crash;
     }
 }
+
+
 
 function updateGameArea() {
     var x, height, gap, minHeight, maxHeight, minGap, maxGap;
@@ -184,7 +214,7 @@ function everyinterval(n) {
     if ((myGameArea.frameNo / n) % 1 == 0) {return true;}
     return false;
 }
-	
+
 
 
 
