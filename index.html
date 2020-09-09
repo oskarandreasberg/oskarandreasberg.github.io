@@ -34,6 +34,22 @@ background-repeat:no-repeat;
 
  }
   
+    	#hardButton {
+z-index:1000;
+height:40px;
+width:70px;
+background-color:black;
+color:white;
+padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+margin-top:40px;
+border-radius: 50px;
+text-align:center;
+   
+	
+	 } 
  			  
 
 </style>
@@ -41,6 +57,18 @@ background-repeat:no-repeat;
 <body>
 
 <div id="startmenu" onclick="startGame(), hideMeny()"></div>
+<div id="hardButton">HARD</div>
+
+
+<!--links start-->
+<script>
+
+document.getElementById("hardButton").onclick = function () {
+    location.href = "hard.html";
+};
+
+</script>
+<!--links end-->
 
 
 
