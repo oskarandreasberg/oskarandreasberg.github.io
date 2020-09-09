@@ -66,7 +66,7 @@ var mySound;
 var myMusic;
 
 function startGame() {
-    myGamePiece = new component(80, 30, "bilder/fisken-01-01.png", 210, 220, "image");
+    myGamePiece = new component(80, 30, "bilder/fisken-01.png", 210, 220, "image");
     mySound = new sound("lyd/krasj.mp3");
     myMusic = new sound("lyd/melodien samlet lang.mp3");
     myMusic.play();
@@ -87,7 +87,7 @@ var myGameArea = {
       myGameArea.key = e.keyCode;
     })
     window.addEventListener('keyup', function (e) {
-	myGamePiece.image.src = "bilder/fisken-01-01.png";
+	myGamePiece.image.src = "bilder/fisken-01.png";
       myGameArea.key = false;
     })
     },
