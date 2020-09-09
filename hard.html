@@ -1,1 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>
+html, body {
+	 height:100%;
+	 width:100%;
+	 border:0;
+	 overflow: hidden;
+	 margin:0;
+	 
+	 
+	  }
+
+
+canvas {
+    border:10px solid black;
+    background-image:url('bilder/bg-01.png');
+	background-size:100%;
+	padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+ 	#startmenu {
+height:100%;
+width:100%;
+background-image:url('bilder/Bg - startmenu-01.png');
+background-size: 100%;
+background-repeat:no-repeat;
+
+ }
+  
+ 			  
+
+</style>
+</head>
+<body>
+
+<div id="startmenu" onclick="startGame(), hideMeny()"></div>
+
+
+
+<script>
+
+
+
+function hideMeny() {
+  var x = document.getElementById("startmenu");
+  if (x.style.display === "none") {
+    x.style.display = "block";
+  } else {
+    x.style.display = "none";
+  }
+}
+
+
+
+
+var myGamePiece;
+var myObstacles = [];
+var mySound;
+var myMusic;
+
+function startGame() {
+    myGamePiece = new component(80, 30, "bilder/fisken-01.png", 210, 220, "image");
+    mySound = new sound("lyd/krasj.mp3");
+    myMusic = new sound("lyd/melodien samlet lang.mp3");
+    myMusic.play();
+    myGameArea.start(0);
+}
+
+var myGameArea = {
+    canvas : document.createElement("canvas"),
+    start : function() {
+        this.canvas.width = 960;
+        this.canvas.height = 540;
+        this.context = this.canvas.getContext("2d");
+        document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+        this.frameNo = 0;
+        this.interval = setInterval(updateGameArea, 20);
+		window.addEventListener('keydown', function (e) {
+		myGamePiece.image.src = "bilder/fisken bobler-01-01.png";
+      myGameArea.key = e.keyCode;
+    })
+    window.addEventListener('keyup', function (e) {
+	myGamePiece.image.src = "bilder/fisken-01.png";
+      myGameArea.key = false;
+    })
+    },
+    stop : function() {
+        clearInterval(this.interval);
+    },    
+    clear : function() {
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+}
+
+function component(width, height, color, x, y, type) {
+ this.type = type;
+  if (type == "image") {
+    this.image = new Image();
+    this.image.src = color;
+  }
+    this.width = width;
+    this.height = height;
+    this.speedX = 0;
+    this.speedY = 0;    
+    this.x = x;
+    this.y = y;    
+    this.update = function() {
+        ctx = myGameArea.context;
+		
+		
+		
+		
+		
+		
+		
+		if (type == "image") {
+      ctx.drawImage(this.image,
+        this.x,
+        this.y,
+        this.width, this.height);
+    } else {
+		
+		
+		
+		
+		
+		
+		
+		
+        ctx.fillStyle = color;
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+    }}
+    this.newPos = function() {
+        this.x += this.speedX;
+        this.y += this.speedY;        
+    }    
+    this.crashWith = function(otherobj) {
+        var myleft = this.x;
+        var myright = this.x + (this.width);
+        var mytop = this.y;
+        var mybottom = this.y + (this.height);
+        var otherleft = otherobj.x;
+        var otherright = otherobj.x + (otherobj.width);
+        var othertop = otherobj.y;
+        var otherbottom = otherobj.y + (otherobj.height);
+        var crash = true;
+        if ((mybottom < othertop) || (mytop > otherbottom) || (myright < otherleft) || (myleft > otherright)) {
+            crash = false;
+        }
+        return crash;
+    }
+}
+
+
+
+function updateGameArea() {
+    var x, height, gap, minHeight, maxHeight, minGap, maxGap;
+    for (i = 0; i < myObstacles.length; i += 1) {
+        if (myGamePiece.crashWith(myObstacles[i])) {
+            mySound.play();
+            myMusic.stop();
+            myGameArea.stop();
+            return;
+        } 
+    }
+    myGameArea.clear();
+	myGamePiece.speedX = 0;
+  myGamePiece.speedY = 0;
+  if (myGameArea.key && myGameArea.key == 38) {myGamePiece.speedY = -4; }
+  if (myGameArea.key && myGameArea.key == 40) {myGamePiece.speedY = 4; }
+    myGameArea.frameNo += 3;
+    if (myGameArea.frameNo == 1 || everyinterval(150)) {
+        x = myGameArea.canvas.width;
+        minHeight = 20;
+        maxHeight = 150;
+        height = Math.floor(Math.random()*(maxHeight-minHeight+1)+minHeight);
+        minGap = 70;
+        maxGap = 150;
+        gap = Math.floor(Math.random()*(maxGap-minGap+1)+minGap);
+        myObstacles.push(new component(22, height, "#ffb711", x, 0));
+        myObstacles.push(new component(22, x - height - gap, "#ffb711", x, height + gap));
+    }
+    for (i = 0; i < myObstacles.length; i += 1) {
+        myObstacles[i].x -= 5;
+        myObstacles[i].update();
+    }
+    myGamePiece.newPos();
+    myGamePiece.update();
+}
+
+function sound(src) {
+    this.sound = document.createElement("audio");
+    this.sound.src = src;
+    this.sound.setAttribute("preload", "auto");
+    this.sound.setAttribute("controls", "none");
+    this.sound.style.display = "none";
+    document.body.appendChild(this.sound);
+    this.play = function(){
+        this.sound.play();
+    }
+    this.stop = function(){
+        this.sound.pause();
+    }    
+}
+
+function everyinterval(n) {
+    if ((myGameArea.frameNo / n) % 1 == 0) {return true;}
+    return false;
+}
+
+
+
+
+
+</script>
+
+</body>
+</html>
 
